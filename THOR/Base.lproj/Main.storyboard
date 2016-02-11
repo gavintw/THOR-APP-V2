@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15C50" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="eFw-Vd-oOV">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+    </dependencies>
+    <scenes>
+        <!--DJIRootViewController-->
+        <scene sceneID="vL0-gL-HVT">
+            <objects>
+                <viewController id="4IP-eb-ju4" userLabel="DJIRootViewController" customClass="DJIRootViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="vbV-lm-Tl9"/>
+                        <viewControllerLayoutGuide type="bottom" id="3s2-O6-hPq"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="eex-sM-eGx">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="G31-ec-2lq">
+                                <rect key="frame" x="0.0" y="59" width="600" height="561"/>
+                                <connections>
+                                    <outlet property="delegate" destination="4IP-eb-ju4" id="ChO-VL-8fF"/>
+                                </connections>
+                            </mapView>
+                            <navigationBar contentMode="scaleToFill" fixedFrame="YES" translucent="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2gd-W6-mTe" userLabel="top bar">
+                                <rect key="frame" x="0.0" y="64" width="600" height="44"/>
+                                <connections>
+                                    <outlet property="delegate" destination="4IP-eb-ju4" id="mu5-Bc-rXv"/>
+                                </connections>
+                            </navigationBar>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Mode" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uU3-FU-NWC">
+                                <rect key="frame" x="9" y="75" width="74" height="21"/>
+                                <fontDescription key="fontDescription" name="Futura-Medium" family="Futura" pointSize="13"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="GPS" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2Mf-Py-spb">
+                                <rect key="frame" x="85" y="75" width="49" height="21"/>
+                                <fontDescription key="fontDescription" name="Futura-Medium" family="Futura" pointSize="13"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="HS" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HeS-LE-j1H">
+                                <rect key="frame" x="137" y="75" width="86" height="21"/>
+                                <fontDescription key="fontDescription" name="Futura-Medium" family="Futura" pointSize="13"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Altitude" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Vdf-hm-OBa">
+                                <rect key="frame" x="314" y="75" width="63" height="21"/>
+                                <fontDescription key="fontDescription" name="Futura-Medium" family="Futura" pointSize="13"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="VS" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0GW-t7-X77">
+                                <rect key="frame" x="226" y="75" width="86" height="21"/>
+                                <fontDescription key="fontDescription" name="Futura-Medium" family="Futura" pointSize="13"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="NRl-EF-x8A">
+                                <rect key="frame" x="320" y="516" width="50" height="76"/>
+                            </imageView>
+                            <view contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="R0O-aV-M5p">
+                                <rect key="frame" x="326" y="531" width="38" height="56"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Battery %" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HZ0-XL-NzO">
+                                        <rect key="frame" x="2" y="0.0" width="35" height="59"/>
+                                        <fontDescription key="fontDescription" name="Futura-Medium" family="Futura" pointSize="15"/>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="bottomMargin" secondItem="G31-ec-2lq" secondAttribute="bottom" id="I4d-ol-6cv"/>
+                            <constraint firstItem="3s2-O6-hPq" firstAttribute="top" secondItem="NRl-EF-x8A" secondAttribute="bottom" id="b2s-HV-yYX"/>
+                            <constraint firstItem="3s2-O6-hPq" firstAttribute="top" secondItem="R0O-aV-M5p" secondAttribute="bottom" constant="5" id="n2P-Kv-3LH"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="YQx-aB-nju">
+                        <barButtonItem key="rightBarButtonItem" systemItem="camera" id="LSN-8O-xyf">
+                            <color key="tintColor" red="0.42091648310000002" green="0.69748232700000001" blue="0.76999998089999999" alpha="1" colorSpace="calibratedRGB"/>
+                            <connections>
+                                <segue destination="RDD-US-vLh" kind="show" id="lse-6S-Yqt"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="altitudeLabel" destination="Vdf-hm-OBa" id="FfN-jd-4pz"/>
+                        <outlet property="batteryBorder" destination="NRl-EF-x8A" id="5vT-EN-Faw"/>
+                        <outlet property="batteryPercentage" destination="HZ0-XL-NzO" id="ViL-vF-B24"/>
+                        <outlet property="batterySymbol" destination="R0O-aV-M5p" id="Zmx-8F-uJk"/>
+                        <outlet property="gpsLabel" destination="2Mf-Py-spb" id="da3-RT-gMO"/>
+                        <outlet property="hsLabel" destination="HeS-LE-j1H" id="e77-sJ-oKw"/>
+                        <outlet property="mapView" destination="G31-ec-2lq" id="eWk-wF-lhZ"/>
+                        <outlet property="modeLabel" destination="uU3-FU-NWC" id="Jz0-R3-4ea"/>
+                        <outlet property="topBarView" destination="2gd-W6-mTe" id="OFa-Zs-CXY"/>
+                        <outlet property="vsLabel" destination="0GW-t7-X77" id="Z4L-BU-QeH"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="pfl-O5-zeM" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1012" y="306"/>
+        </scene>
+        <!--ImageViewController-->
+        <scene sceneID="Ah4-mF-e6J">
+            <objects>
+                <viewController title="ImageViewController" id="RDD-US-vLh" customClass="ImageViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="0Hd-Si-Gq4"/>
+                        <viewControllerLayoutGuide type="bottom" id="QSM-Aj-8iD"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="GJn-5D-qpk">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2lw-dB-7Qx">
+                                <rect key="frame" x="0.0" y="64" width="375" height="50"/>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                <fontDescription key="fontDescription" name="Futura-Medium" family="Futura" pointSize="15"/>
+                                <state key="normal" title="Download from Drone">
+                                    <color key="titleColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                </state>
+                                <connections>
+                                    <action selector="onDownloadButtonClicked:" destination="RDD-US-vLh" eventType="touchUpInside" id="r6K-1V-iD8"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iJG-e1-lIK">
+                                <rect key="frame" x="0.0" y="114" width="375" height="50"/>
+                                <fontDescription key="fontDescription" name="Futura-Medium" family="Futura" pointSize="15"/>
+                                <state key="normal" title="Upload to Cloud"/>
+                                <connections>
+                                    <action selector="onUploadButtonClicked:" destination="RDD-US-vLh" eventType="touchUpInside" id="4U1-Fg-Jus"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="f5k-UX-ekK">
+                                <rect key="frame" x="0.0" y="550" width="375" height="50"/>
+                                <fontDescription key="fontDescription" name="Futura-Medium" family="Futura" pointSize="15"/>
+                                <state key="normal" title="Process"/>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="QSM-Aj-8iD" firstAttribute="top" secondItem="f5k-UX-ekK" secondAttribute="bottom" id="3zL-La-Qme"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="7pc-TC-BF3"/>
+                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <size key="freeformSize" width="600" height="600"/>
+                    <connections>
+                        <outlet property="downloadBtn" destination="2lw-dB-7Qx" id="u49-hm-cca"/>
+                        <outlet property="processBtn" destination="f5k-UX-ekK" id="g5E-EE-bCU"/>
+                        <outlet property="uploadBtn" destination="iJG-e1-lIK" id="7rq-nA-nhg"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Orr-jg-CVn" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1767" y="299"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="Ym6-P2-gwo">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="eFw-Vd-oOV" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="saA-U7-taZ">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="4IP-eb-ju4" kind="relationship" relationship="rootViewController" id="sFc-qJ-1am"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="xT6-6T-rvJ" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="212" y="299"/>
+        </scene>
+    </scenes>
+</document>
