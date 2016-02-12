@@ -55,6 +55,7 @@
 {
     [self.phantomDrone connectToDrone];
     [self.phantomProMainController startUpdateMCSystemState];
+    [self.camera startCameraSystemStateUpdates];
 }
 
 #pragma mark Init Methods
@@ -141,18 +142,27 @@
 
 - (void)initDrone
 {
+    //init drone
     self.phantomDrone = [[DJIDrone alloc] initWithType:DJIDrone_Phantom3Professional];
     self.phantomDrone.delegate = self;
     
+    //init camera
+    self.camera = (DJIPhantom3ProCamera*)self.phantomDrone.camera;
+    self.camera.delegate = self;
+    
+    //init navigation for waypoints
     self.navigationManager = self.phantomDrone.mainController.navigationManager;
     self.navigationManager.delegate = self;
     
+    //init flight controller
     self.phantomProMainController = (DJIPhantom3ProMainController *)self.phantomDrone.mainController;
     self.phantomProMainController.mcDelegate = self;
     
+    //init waypointMission
     self.waypointMission = self.navigationManager.waypointMission;
     
-    self.batteryInfo = [[DJIBattery alloc]init];
+    //try to fix batteryInfo issue by using Pro specific battery
+    //self.batteryInfo = [[DJIBattery alloc]init];
     
     [self registerApp];
 }
@@ -211,6 +221,21 @@
     }
 }
 
+#pragma mark DJICameraDelegate
+-(void)camera:(DJICamera *)camera didUpdateSystemState:(DJICameraSystemState *)systemState
+{
+    //update camera system state, required to begin camera interface
+}
+
+-(void)captureImageAtWaypoint
+{
+    for(int i = 0; i<self.waypointMission.waypointCount; i++) {
+        DJIWaypointAction *snapPicture = [[DJIWaypointAction alloc]initWithActionType:DJIWaypointActionStartTakePhoto param:0];
+        DJIWaypoint *waypoint = [self.waypointMission waypointAtIndex:i];
+        [waypoint addAction:snapPicture];
+    }
+}
+
 #pragma mark DJIAppManagerDelegate Method
 -(void)appManagerDidRegisterWithError:(int)error
 {
@@ -221,6 +246,7 @@
     {
         [self.phantomDrone connectToDrone];
         [self.phantomDrone.mainController startUpdateMCSystemState];
+        [self.camera startCameraSystemStateUpdates];
     }
     [self displayAlertWithMessage:message andTitle:@"Register App" withActionOK:@"OK" withActionCancel:nil];
 }
@@ -368,6 +394,8 @@
     
     //If mission is not too long, given remaining battery
     if([self userDefinedMissionSanityCheck]) {
+        
+        [self captureImageAtWaypoint];
         
         //Heading Mode during mission
         self.waypointMission.headingMode = (DJIWaypointMissionHeadingMode)self.waypointConfigVC.headingSegmentedControl.selectedSegmentIndex;
@@ -587,7 +615,6 @@
 }
 
 #pragma mark - UIAlertViewDelegate
-
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     if (alertView.tag == kEnterNaviModeFailedAlertTag) {
