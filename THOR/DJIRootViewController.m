@@ -147,8 +147,8 @@
     self.phantomDrone.delegate = self;
     
     //init camera
-    self.camera = (DJIPhantom3ProCamera*)self.phantomDrone.camera;
-    self.camera.delegate = self;
+//    self.camera = (DJIPhantom3ProCamera*)self.phantomDrone.camera;
+//    self.camera.delegate = self;
     
     //init navigation for waypoints
     self.navigationManager = self.phantomDrone.mainController.navigationManager;
@@ -161,8 +161,8 @@
     //init waypointMission
     self.waypointMission = self.navigationManager.waypointMission;
     
-    //try to fix batteryInfo issue by using Pro specific battery
-    //self.batteryInfo = [[DJIBattery alloc]init];
+    //Battery
+    self.batteryInfo = [[DJIPhantom3ProBattery alloc]init];
     
     [self registerApp];
 }
@@ -221,11 +221,11 @@
     }
 }
 
-#pragma mark DJICameraDelegate
--(void)camera:(DJICamera *)camera didUpdateSystemState:(DJICameraSystemState *)systemState
-{
-    //update camera system state, required to begin camera interface
-}
+//#pragma mark DJICameraDelegate
+//-(void)camera:(DJICamera *)camera didUpdateSystemState:(DJICameraSystemState *)systemState
+//{
+//    //update camera system state, required to begin camera interface
+//}
 
 -(void)captureImageAtWaypoint
 {
@@ -277,8 +277,8 @@
     //Check feasibility of mission, relationship between advertised max flight time * battery remaining
     //and missionLifeTime calculated from user entered parameters
     self.missionLifeTime = (self.missionLengthDistance)/(self.waypointMission.maxFlightSpeed); //(m)/(m/s)
-    //convert power level to 1/4, 2/4, 3/4, or 4/4, and scale advertisedFlightTime by remaining power
-    self.powerScaleFactor = (float)(self.powerLevel+1)/4;
+    //convert battery% to scaling ratio to * advertisedFlightTime
+    self.powerScaleFactor = ((self.powerPercent)/100.0);
     self.remainingFlightTime = self.advertisedFlightTime*self.powerScaleFactor;
     if(self.missionLifeTime >= self.remainingFlightTime) {
         self.missionLengthDistance = 0.0;
@@ -642,15 +642,12 @@
         [self.phantomProMainController setMultipleFlightModeOpen:YES withResult:nil];
     }
     
-    //not returning battery info
-//    [self.batteryInfo updateBatteryInfo:^(DJIError *error) {
-//        if(error.errorCode == ERR_Succeeded) {
-//            self.batteryPercentage.text = [NSString stringWithFormat:@"%ld", (long)self.batteryInfo.remainPowerPercent];
-//        }
-//        if(error.errorCode != ERR_Succeeded) {
-//            [self displayAlertWithMessage:@"batteryInfo not retrieved" andTitle:@"battery info" withActionOK:@"OK" withActionCancel:nil];
-//        }
-//    }];
+    [self.batteryInfo updateBatteryInfo:^(DJIError *error) {
+        if(error.errorCode == ERR_Succeeded) {
+            self.batteryPercentage.text = [NSString stringWithFormat:@" %ld", (long)self.batteryInfo.remainPowerPercent];
+            self.powerPercent = (long)self.batteryInfo.remainPowerPercent;
+        }
+    }];
     
     self.modeLabel.text = state.flightModeString;
     self.gpsLabel.text = [NSString stringWithFormat:@"GPS: %d", state.satelliteCount];
@@ -661,7 +658,7 @@
     //Pre Launch important variable checks
     self.gpsSatelliteCount = state.satelliteCount;
     self.powerLevel = state.powerLevel;
-    self.batteryPercentage.text = [NSString stringWithFormat:@"%i", self.powerLevel+1];
+    //self.batteryPercentage.text = [NSString stringWithFormat:@"%i", self.powerLevel+1];
     self.gpsSignalLevel = state.gpsSignalLevel;
     
     [self.mapController updateAircraftLocation:self.droneLocation withMapView:self.mapView];

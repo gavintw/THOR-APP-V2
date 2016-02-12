@@ -41,13 +41,14 @@
 @property (atomic) float remainingFlightTime;
 @property (atomic) float powerScaleFactor;
 @property(nonatomic, strong) DJIBattery *batteryInfo;
+@property (atomic) long powerPercent;
 
 //Drone and flight controller
 @property(nonatomic, strong) DJIDrone* phantomDrone;
 @property(nonatomic, strong) DJIPhantom3ProMainController* phantomProMainController;
 
 //Camera
-@property(strong, nonatomic) DJIPhantom3ProCamera *camera;
+@property(nonatomic, strong) DJIPhantom3ProCamera *camera;
 
 //waypoints and navigation
 @property(nonatomic, weak) NSObject<DJINavigation>* navigationManager;
