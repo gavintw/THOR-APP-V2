@@ -33,6 +33,10 @@
 @property(atomic) int gpsSatelliteCount;
 @property(atomic) int powerLevel;
 @property(atomic) DJIGpsSignalLevel gpsSignalLevel;
+@property (atomic) float missionLengthDistance;
+@property (atomic) float missionLifeTime;
+@property (atomic) float advertisedFlightTime;
+@property (atomic) float powerScaleFactor;
 @property(nonatomic, strong) DJIBattery *batteryInfo;
 
 @property(nonatomic, strong) DJIDrone* phantomDrone;

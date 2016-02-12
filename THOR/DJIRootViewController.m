@@ -71,8 +71,13 @@
     self.mapController = [[DJIMapController alloc] init];
     self.tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(addWaypoints:)];
     [self.mapView addGestureRecognizer:self.tapGesture];
-
-
+    
+    //advertised max flight time is 23 min, use 20 to be conservative, *60 to convert to seconds
+    self.advertisedFlightTime = 20*60;
+    
+    //user defined mission properties
+    self.missionLengthDistance = 0.0;
+    self.missionLifeTime = 0.0;
 }
 
 -(void) initUI
@@ -312,12 +317,16 @@
 {
     __weak DJIRootViewController *weakSelf = self;
     
+    self.missionLengthDistance = 0.0;
+    self.missionLifeTime = 0.0;
+    
     [UIView animateWithDuration:0.25 animations:^{
         weakSelf.waypointConfigVC.view.alpha = 0;
     }];
     
 }
 
+//User defined mission is entered and uploaded to drone
 - (void)finishBtnActionInDJIWaypointConfigViewController:(DJIWaypointConfigViewController *)waypointConfigVC
 {
     __weak DJIRootViewController *weakSelf = self;
@@ -335,6 +344,17 @@
     //Waypoint Missions are uploaded to drone
     self.waypointMission.maxFlightSpeed = [self.waypointConfigVC.maxFlightSpeedTextField.text floatValue];
     self.waypointMission.autoFlightSpeed = [self.waypointConfigVC.autoFlightSpeedTextField.text floatValue];
+    
+    //Check feasibility of mission, relationship between advertised max flight time * battery remaining
+    //and missionLifeTime calculated from user entered parameters
+    self.missionLifeTime = (self.missionLengthDistance)/(self.waypointMission.maxFlightSpeed); //(m)/(m/s)
+    //convert power level to 1/4, 2/4, 3/4, or 4/4, and scale advertisedFlightTime by remaining power
+    self.powerScaleFactor = (self.powerLevel+1)/4;
+    if(self.missionLifeTime >= (self.advertisedFlightTime*self.powerScaleFactor)) {
+        self.missionLengthDistance = 0.0;
+        self.missionLifeTime = 0.0;
+        [self displayAlertWithMessage:@"Enter a shorter mission" andTitle:@"Mission Length too long" withActionOK:@"OK" withActionCancel:nil];
+    }
     
     //Heading Mode during mission
     self.waypointMission.headingMode = (DJIWaypointMissionHeadingMode)self.waypointConfigVC.headingSegmentedControl.selectedSegmentIndex;
@@ -465,6 +485,12 @@
 
     for (int i = 0; i < wayPoints.count; i++) {
         CLLocation* location = [wayPoints objectAtIndex:i];
+        //increment missionLengthDistance with distance between each waypoint in user defined mission
+        if(i < (wayPoints.count-1)) {
+            CLLocation *location2 = [wayPoints objectAtIndex:i+1];
+            CLLocationDistance meters = [location2 distanceFromLocation:location];
+            self.missionLengthDistance += meters;
+        }
         if (CLLocationCoordinate2DIsValid(location.coordinate)) {
             DJIWaypoint* waypoint = [[DJIWaypoint alloc] initWithCoordinate:location.coordinate];
             [self.waypointMission addWaypoint:waypoint];
