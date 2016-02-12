@@ -36,6 +36,7 @@
 @property (atomic) float missionLengthDistance;
 @property (atomic) float missionLifeTime;
 @property (atomic) float advertisedFlightTime;
+@property (atomic) float remainingFlightTime;
 @property (atomic) float powerScaleFactor;
 @property(nonatomic, strong) DJIBattery *batteryInfo;
 

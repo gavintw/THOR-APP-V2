@@ -78,6 +78,8 @@
     //user defined mission properties
     self.missionLengthDistance = 0.0;
     self.missionLifeTime = 0.0;
+    //when not connected to drone, set power level to test mission sanity check
+    //self.powerLevel = 0;
 }
 
 -(void) initUI
@@ -244,6 +246,25 @@
     }
 }
 
+-(BOOL)userDefinedMissionSanityCheck
+{
+    //Check feasibility of mission, relationship between advertised max flight time * battery remaining
+    //and missionLifeTime calculated from user entered parameters
+    self.missionLifeTime = (self.missionLengthDistance)/(self.waypointMission.maxFlightSpeed); //(m)/(m/s)
+    //convert power level to 1/4, 2/4, 3/4, or 4/4, and scale advertisedFlightTime by remaining power
+    self.powerScaleFactor = (float)(self.powerLevel+1)/4;
+    self.remainingFlightTime = self.advertisedFlightTime*self.powerScaleFactor;
+    if(self.missionLifeTime >= self.remainingFlightTime) {
+        self.missionLengthDistance = 0.0;
+        self.missionLifeTime = 0.0;
+        [self displayAlertWithMessage:@"Enter a shorter mission" andTitle:@"Mission Length too long" withActionOK:@"OK" withActionCancel:nil];
+        //not a good mission
+        return NO;
+    }
+    //mission is ok
+    return YES;
+}
+
 //Check if user placed waypoint is within range of the user
 -(BOOL)waypointOutOfRange:(CGPoint) point
 {
@@ -345,67 +366,59 @@
     self.waypointMission.maxFlightSpeed = [self.waypointConfigVC.maxFlightSpeedTextField.text floatValue];
     self.waypointMission.autoFlightSpeed = [self.waypointConfigVC.autoFlightSpeedTextField.text floatValue];
     
-    //Check feasibility of mission, relationship between advertised max flight time * battery remaining
-    //and missionLifeTime calculated from user entered parameters
-    self.missionLifeTime = (self.missionLengthDistance)/(self.waypointMission.maxFlightSpeed); //(m)/(m/s)
-    //convert power level to 1/4, 2/4, 3/4, or 4/4, and scale advertisedFlightTime by remaining power
-    self.powerScaleFactor = (self.powerLevel+1)/4;
-    if(self.missionLifeTime >= (self.advertisedFlightTime*self.powerScaleFactor)) {
-        self.missionLengthDistance = 0.0;
-        self.missionLifeTime = 0.0;
-        [self displayAlertWithMessage:@"Enter a shorter mission" andTitle:@"Mission Length too long" withActionOK:@"OK" withActionCancel:nil];
-    }
-    
-    //Heading Mode during mission
-    self.waypointMission.headingMode = (DJIWaypointMissionHeadingMode)self.waypointConfigVC.headingSegmentedControl.selectedSegmentIndex;
-    
-    //Should select Go Home or None right now
-    self.waypointMission.finishedAction = (DJIWaypointMissionFinishedAction)self.waypointConfigVC.actionSegmentedControl.selectedSegmentIndex;
-    
-    //The drone will move from waypoint to waypoint in a straight line
-    self.waypointMission.flightPathMode = DJIWaypointMissionFlightPathNormal;
-    
-    if (self.waypointMission.isValid) {
+    //If mission is not too long, given remaining battery
+    if([self userDefinedMissionSanityCheck]) {
         
-        if (weakSelf.uploadProgressView == nil) {
-            weakSelf.uploadProgressView = [[UIAlertView alloc] initWithTitle:@"" message:@"" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil];
-            [weakSelf.uploadProgressView show];
-        }
-
-        [self.waypointMission setUploadProgressHandler:^(uint8_t progress) {
+        //Heading Mode during mission
+        self.waypointMission.headingMode = (DJIWaypointMissionHeadingMode)self.waypointConfigVC.headingSegmentedControl.selectedSegmentIndex;
+        
+        //Should select Go Home or None right now
+        self.waypointMission.finishedAction = (DJIWaypointMissionFinishedAction)self.waypointConfigVC.actionSegmentedControl.selectedSegmentIndex;
+        
+        //The drone will move from waypoint to waypoint in a straight line
+        self.waypointMission.flightPathMode = DJIWaypointMissionFlightPathNormal;
+        
+        if (self.waypointMission.isValid) {
             
-            [weakSelf.uploadProgressView setTitle:@"Mission Uploading"];
-            NSString* message = [NSString stringWithFormat:@"%d%%", progress];
-            [weakSelf.uploadProgressView setMessage:message];
-            
-        }];
-
-        [self.waypointMission uploadMissionWithResult:^(DJIError *error) {
-
-            [weakSelf.uploadProgressView setTitle:@"Mission Upload Finished"];
-
-            if (error.errorCode != ERR_Succeeded) {
-                [weakSelf.uploadProgressView setMessage:@"Mission Invalid!"];
+            if (weakSelf.uploadProgressView == nil) {
+                weakSelf.uploadProgressView = [[UIAlertView alloc] initWithTitle:@"" message:@"" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil];
+                [weakSelf.uploadProgressView show];
             }
             
-            [weakSelf.waypointMission setUploadProgressHandler:nil];
-            [weakSelf performSelector:@selector(hideProgressView) withObject:nil afterDelay:3.0];
-            
-            [weakSelf.waypointMission startMissionWithResult:^(DJIError *error) {
-                if (error.errorCode != ERR_Succeeded) {
-                    UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:@"Start Mission Failed" message:error.errorDescription delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-                    [alertView show];
-                }
+            [self.waypointMission setUploadProgressHandler:^(uint8_t progress) {
+                
+                [weakSelf.uploadProgressView setTitle:@"Mission Uploading"];
+                NSString* message = [NSString stringWithFormat:@"%d%%", progress];
+                [weakSelf.uploadProgressView setMessage:message];
+                
             }];
             
-        }];
-
-    }else
-    {
-        UIAlertView *invalidMissionAlert = [[UIAlertView alloc] initWithTitle:@"Waypoint mission invalid" message:@"" delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
-        [invalidMissionAlert show];
+            [self.waypointMission uploadMissionWithResult:^(DJIError *error) {
+                
+                [weakSelf.uploadProgressView setTitle:@"Mission Upload Finished"];
+                
+                if (error.errorCode != ERR_Succeeded) {
+                    [weakSelf.uploadProgressView setMessage:@"Mission Invalid!"];
+                }
+                
+                [weakSelf.waypointMission setUploadProgressHandler:nil];
+                [weakSelf performSelector:@selector(hideProgressView) withObject:nil afterDelay:3.0];
+                
+                [weakSelf.waypointMission startMissionWithResult:^(DJIError *error) {
+                    if (error.errorCode != ERR_Succeeded) {
+                        UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:@"Start Mission Failed" message:error.errorDescription delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                        [alertView show];
+                    }
+                }];
+                
+            }];
+            
+        }else
+        {
+            UIAlertView *invalidMissionAlert = [[UIAlertView alloc] initWithTitle:@"Waypoint mission invalid" message:@"" delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+            [invalidMissionAlert show];
+        }
     }
-    
 }
 
 #pragma mark - DJIGSButtonViewController Delegate Methods
@@ -621,7 +634,7 @@
     //Pre Launch important variable checks
     self.gpsSatelliteCount = state.satelliteCount;
     self.powerLevel = state.powerLevel;
-    self.batteryPercentage.text = [NSString stringWithFormat:@"%i", self.powerLevel];
+    self.batteryPercentage.text = [NSString stringWithFormat:@"%i", self.powerLevel+1];
     self.gpsSignalLevel = state.gpsSignalLevel;
     
     [self.mapController updateAircraftLocation:self.droneLocation withMapView:self.mapView];
