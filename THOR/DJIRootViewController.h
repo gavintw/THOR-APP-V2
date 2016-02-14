@@ -8,7 +8,7 @@
 #import <MapKit/MapKit.h>
 #import <CoreLocation/CoreLocation.h>
 
-@interface DJIRootViewController : UIViewController<MKMapViewDelegate, CLLocationManagerDelegate, DJIDroneDelegate, DJIMainControllerDelegate, GroundStationDelegate, DJINavigationDelegate, DJIAppManagerDelegate, DJICameraDelegate>
+@interface DJIRootViewController : UIViewController<MKMapViewDelegate, CLLocationManagerDelegate, DJIDroneDelegate, DJIMainControllerDelegate, GroundStationDelegate, DJINavigationDelegate, DJIAppManagerDelegate>
 
 //mapping
 @property (nonatomic, strong) DJIMapController *mapController;
@@ -55,7 +55,8 @@
 @property(nonatomic, weak) NSObject<DJIWaypointMission>* waypointMission;
 
 //upload mission progress
-@property(nonatomic, strong) UIAlertView* uploadProgressView;
+//@property(nonatomic, strong) UIAlertView* uploadProgressView;
+@property(nonatomic, strong) UIAlertController* uploadProgressView;
 
 //Battery graphic information
 @property (nonatomic, strong) IBOutlet UILabel *batteryPercentage;

@@ -6,9 +6,7 @@
 #import "DJIGSButtonViewController.h"
 #import "DJIWaypointConfigViewController.h"
 
-#define kEnterNaviModeFailedAlertTag 1001
-
-@interface DJIRootViewController ()<DJIGSButtonViewControllerDelegate, DJIWaypointConfigViewControllerDelegate>
+@interface DJIRootViewController ()<DJIGSButtonViewControllerDelegate, DJIWaypointConfigViewControllerDelegate, DJICameraDelegate>
 @property (nonatomic, assign)BOOL isEditingPoints;
 @property (nonatomic, strong)DJIGSButtonViewController *gsButtonVC;
 @property (nonatomic, strong)DJIWaypointConfigViewController *waypointConfigVC;
@@ -81,6 +79,7 @@
     self.missionLifeTime = 0.0;
     //when not connected to drone, set power level to test mission sanity check
     //self.powerLevel = 0;
+    //self.powerPercent = 100;
 }
 
 -(void) initUI
@@ -147,8 +146,8 @@
     self.phantomDrone.delegate = self;
     
     //init camera
-//    self.camera = (DJIPhantom3ProCamera*)self.phantomDrone.camera;
-//    self.camera.delegate = self;
+    //self.camera = (DJIPhantom3ProCamera*)self.phantomDrone.camera;
+    //self.camera.delegate = self;
     
     //init navigation for waypoints
     self.navigationManager = self.phantomDrone.mainController.navigationManager;
@@ -179,6 +178,7 @@
                       andTitle:(NSString*)title
                       withActionOK:(NSString*)OK
                       withActionCancel:(NSString*)Cancel
+                      withActionRetryNavigation:(NSString*)Retry
 {
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
     if(OK != nil) {
@@ -188,6 +188,12 @@
     if(Cancel != nil) {
         UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:Cancel style:UIAlertActionStyleCancel handler:^(UIAlertAction * action) {}];
         [alert addAction:cancelAction];
+    }
+    if(Retry != nil) {
+        UIAlertAction *retryAction = [UIAlertAction actionWithTitle:Retry style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
+            [self enterNavigationMode];
+        }];
+        [alert addAction:retryAction];
     }
     [self presentViewController:alert animated:YES completion:nil];
 }
@@ -216,7 +222,7 @@
 -(void) hideProgressView
 {
     if (self.uploadProgressView) {
-        [self.uploadProgressView dismissWithClickedButtonIndex:-1 animated:YES];
+        [self.uploadProgressView dismissViewControllerAnimated:YES completion:nil];
         self.uploadProgressView = nil;
     }
 }
@@ -248,7 +254,7 @@
         [self.phantomDrone.mainController startUpdateMCSystemState];
         [self.camera startCameraSystemStateUpdates];
     }
-    [self displayAlertWithMessage:message andTitle:@"Register App" withActionOK:@"OK" withActionCancel:nil];
+    [self displayAlertWithMessage:message andTitle:@"Register App" withActionOK:@"OK" withActionCancel:nil withActionRetryNavigation:nil];
 }
 
 #pragma mark CLLocation Methods
@@ -267,8 +273,7 @@
         }
     }else
     {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Location Service is not available" message:@"" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
-        [alert show];
+        [self displayAlertWithMessage:@"" andTitle:@"Location Services is not available" withActionOK:@"OK" withActionCancel:nil withActionRetryNavigation:nil];
     }
 }
 
@@ -283,7 +288,7 @@
     if(self.missionLifeTime >= self.remainingFlightTime) {
         self.missionLengthDistance = 0.0;
         self.missionLifeTime = 0.0;
-        [self displayAlertWithMessage:@"Enter a shorter mission" andTitle:@"Mission Length too long" withActionOK:@"OK" withActionCancel:nil];
+        [self displayAlertWithMessage:@"Enter a shorter mission" andTitle:@"Mission Length too long" withActionOK:@"OK" withActionCancel:nil withActionRetryNavigation:nil];
         //not a good mission
         return NO;
     }
@@ -302,7 +307,7 @@
         return YES;
     }
     else {
-        [self displayAlertWithMessage:@"Place Closer Waypoint" andTitle:@"Waypoint Out of Range" withActionOK:@"OK" withActionCancel:nil];
+        [self displayAlertWithMessage:@"Place Closer Waypoint" andTitle:@"Waypoint Out of Range" withActionOK:@"OK" withActionCancel:nil withActionRetryNavigation:nil];
         return NO;
     }
 }
@@ -350,10 +355,9 @@
 -(void) groundStation:(id<DJIGroundStation>)gs didUploadWaypointMissionWithProgress:(uint8_t)progress
 {
     if (self.uploadProgressView == nil) {
-        self.uploadProgressView = [[UIAlertView alloc] initWithTitle:@"Mission Uploading" message:@"" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil];
-        [self.uploadProgressView show];
+        self.uploadProgressView = [UIAlertController alertControllerWithTitle:@"Mission Uploading" message:@"" preferredStyle:UIAlertControllerStyleAlert];
+        [self presentViewController:self.uploadProgressView animated:YES completion:nil];
     }
-    
     NSString* message = [NSString stringWithFormat:@"%d%%", progress];
     [self.uploadProgressView setMessage:message];
 }
@@ -409,8 +413,8 @@
         if (self.waypointMission.isValid) {
             
             if (weakSelf.uploadProgressView == nil) {
-                weakSelf.uploadProgressView = [[UIAlertView alloc] initWithTitle:@"" message:@"" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil];
-                [weakSelf.uploadProgressView show];
+                weakSelf.uploadProgressView = [UIAlertController alertControllerWithTitle:@"" message:@"" preferredStyle:UIAlertControllerStyleAlert];
+                [weakSelf presentViewController:weakSelf.uploadProgressView animated:YES completion:nil];
             }
             
             [self.waypointMission setUploadProgressHandler:^(uint8_t progress) {
@@ -434,8 +438,7 @@
                 
                 [weakSelf.waypointMission startMissionWithResult:^(DJIError *error) {
                     if (error.errorCode != ERR_Succeeded) {
-                        UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:@"Start Mission Failed" message:error.errorDescription delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-                        [alertView show];
+                        [self displayAlertWithMessage:error.errorDescription andTitle:@"Start Mission Failed" withActionOK:@"OK" withActionCancel:nil withActionRetryNavigation:nil];
                     }
                 }];
                 
@@ -443,8 +446,7 @@
             
         }else
         {
-            UIAlertView *invalidMissionAlert = [[UIAlertView alloc] initWithTitle:@"Waypoint mission invalid" message:@"" delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
-            [invalidMissionAlert show];
+            [self displayAlertWithMessage:@"" andTitle:@"Waypoint mission invalid" withActionOK:@"OK" withActionCancel:nil withActionRetryNavigation:nil];
         }
     }
 }
@@ -456,8 +458,7 @@
     [self.waypointMission stopMissionWithResult:^(DJIError *error) {
         
         if (error.errorCode == ERR_Succeeded) {
-            UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:@"Stop Mission Success" message:@"" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-            [alertView show];
+            [self displayAlertWithMessage:@"" andTitle:@"Stop Mission Success" withActionOK:@"OK" withActionCancel:nil withActionRetryNavigation:nil];
         }
 
     }];
@@ -480,8 +481,7 @@
     
     NSArray* wayPoints = self.mapController.wayPoints;
     if (wayPoints == nil || wayPoints.count < DJIWaypointMissionMinimumWaypointCount) {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"No or not enough waypoint for mission" message:@"" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
-        [alert show];
+        [self displayAlertWithMessage:@"" andTitle:@"Not enough waypoints for the mission" withActionOK:@"OK" withActionCancel:nil withActionRetryNavigation:nil];
         return;
     }
     
@@ -544,8 +544,7 @@
 {
     [self.waypointMission startMissionWithResult:^(DJIError *error) {
         if (error.errorCode != ERR_Succeeded) {
-            UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:@"Start Mission Failed" message:error.errorDescription delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-            [alertView show];
+            [self displayAlertWithMessage:error.errorDescription andTitle:@"Start Mission Failed" withActionOK:@"OK" withActionCancel:nil withActionRetryNavigation:nil];
         }
     }];
 }
@@ -600,28 +599,14 @@
     [self.navigationManager enterNavigationModeWithResult:^(DJIError *error) {
         if (error.errorCode != ERR_Succeeded) {
             NSString* message = [NSString stringWithFormat:@"Enter navigation mode failed:%@", error.errorDescription];
-            UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:@"Enter Navigation Mode" message:message delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Retry", nil];
-            alertView.tag = kEnterNaviModeFailedAlertTag;
-            [alertView show];
+            [self displayAlertWithMessage:message andTitle:@"Enter Navigation Mode" withActionOK:nil withActionCancel:@"Cancel" withActionRetryNavigation:@"Retry"];
         }
         else
         {
             NSString* message = @"Enter navigation mode Success";
-            UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:@"Enter Navigation Mode" message:message delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
-            [alertView show];
-            
+            [self displayAlertWithMessage:message andTitle:@"Enter Navigation Mode" withActionOK:@"OK" withActionCancel:nil withActionRetryNavigation:nil];
         }
     }];
-}
-
-#pragma mark - UIAlertViewDelegate
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    if (alertView.tag == kEnterNaviModeFailedAlertTag) {
-        if (buttonIndex == 1) {
-            [self enterNavigationMode];
-        }
-    }
 }
 
 #pragma mark - DJIDroneDelegate Method
