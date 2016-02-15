@@ -63,4 +63,14 @@
 @property (weak, nonatomic) IBOutlet UIView *batterySymbol;
 @property (weak, nonatomic) IBOutlet UIImageView *batteryBorder;
 
+//compass
+@property(atomic) DJICompassCalibrationStatus compassStatus;
+
+//Alert
+-(void)displayAlertWithMessage:(NSString*)message
+                      andTitle:(NSString*)title
+                  withActionOK:(NSString*)OK
+              withActionCancel:(NSString*)Cancel
+     withActionRetryNavigation:(NSString*)Retry;
+
 @end

@@ -1,0 +1,8 @@
+source 'https://github.com/CocoaPods/Specs.git'
+pod 'AWSCore'
+pod 'AWSEC2'
+pod 'AWSLambda'
+pod 'AWSMobileAnalytics'
+pod 'AWSS3'
+pod 'AWSSimpleDB'
+pod 'AWSCognito'

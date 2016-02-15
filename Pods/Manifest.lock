@@ -1,0 +1,34 @@
+PODS:
+  - AWSCognito (2.3.5):
+    - AWSCore (= 2.3.5)
+  - AWSCore (2.3.5)
+  - AWSEC2 (2.3.5):
+    - AWSCore (= 2.3.5)
+  - AWSLambda (2.3.5):
+    - AWSCore (= 2.3.5)
+  - AWSMobileAnalytics (2.3.5):
+    - AWSCore (= 2.3.5)
+  - AWSS3 (2.3.5):
+    - AWSCore (= 2.3.5)
+  - AWSSimpleDB (2.3.5):
+    - AWSCore (= 2.3.5)
+
+DEPENDENCIES:
+  - AWSCognito
+  - AWSCore
+  - AWSEC2
+  - AWSLambda
+  - AWSMobileAnalytics
+  - AWSS3
+  - AWSSimpleDB
+
+SPEC CHECKSUMS:
+  AWSCognito: f12700b4781897b2913544b36d6283f04ae72a44
+  AWSCore: 8022eda5778fd7b87c9182709d8a27388e1a31fb
+  AWSEC2: e22d75ea1bbc539d0a0c1b8fa2537cd530da2342
+  AWSLambda: edf348943ce81d52a9e95dace7293fb7bd42732d
+  AWSMobileAnalytics: 6bfd7ef10008c936746ca1a96d0b72e9a543e166
+  AWSS3: 967f4ad3c91f1ed2c9dca09a9dcf905111232a87
+  AWSSimpleDB: a523844c8b027c850688ffa6f79f33b06abbef9d
+
+COCOAPODS: 0.39.0

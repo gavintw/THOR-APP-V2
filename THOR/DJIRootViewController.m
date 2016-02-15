@@ -6,7 +6,7 @@
 #import "DJIGSButtonViewController.h"
 #import "DJIWaypointConfigViewController.h"
 
-@interface DJIRootViewController ()<DJIGSButtonViewControllerDelegate, DJIWaypointConfigViewControllerDelegate, DJICameraDelegate>
+@interface DJIRootViewController ()<DJIGSButtonViewControllerDelegate, DJIWaypointConfigViewControllerDelegate, DJICameraDelegate, DJICompass>
 @property (nonatomic, assign)BOOL isEditingPoints;
 @property (nonatomic, strong)DJIGSButtonViewController *gsButtonVC;
 @property (nonatomic, strong)DJIWaypointConfigViewController *waypointConfigVC;
@@ -96,7 +96,7 @@
     
     //Button Side Navigation
     self.gsButtonVC = [[DJIGSButtonViewController alloc] initWithNibName:@"DJIGSButtonViewController" bundle:[NSBundle mainBundle]];
-    [self.gsButtonVC.view setFrame:CGRectMake(0, self.topBarView.frame.origin.y + self.topBarView.frame.size.height+300, self.gsButtonVC.view.frame.size.width, self.gsButtonVC.view.frame.size.height)];
+    [self.gsButtonVC.view setFrame:CGRectMake(0, self.topBarView.frame.origin.y + self.topBarView.frame.size.height+285, self.gsButtonVC.view.frame.size.width, self.gsButtonVC.view.frame.size.height)];
     self.gsButtonVC.delegate = self;
     
     [self.view addSubview:self.gsButtonVC.view];
@@ -136,7 +136,6 @@
     //initialize battery graphic
     self.batterySymbol.backgroundColor = self.myColorGreen;
     self.batteryBorder.image = [UIImage imageNamed:@"battery.png"];
-    
 }
 
 - (void)initDrone
@@ -146,7 +145,7 @@
     self.phantomDrone.delegate = self;
     
     //init camera
-    //self.camera = (DJIPhantom3ProCamera*)self.phantomDrone.camera;
+    self.camera = (DJIPhantom3ProCamera*)self.phantomDrone.camera;
     //self.camera.delegate = self;
     
     //init navigation for waypoints
@@ -228,10 +227,10 @@
 }
 
 //#pragma mark DJICameraDelegate
-//-(void)camera:(DJICamera *)camera didUpdateSystemState:(DJICameraSystemState *)systemState
-//{
-//    //update camera system state, required to begin camera interface
-//}
+-(void)camera:(DJICamera *)camera didUpdateSystemState:(DJICameraSystemState *)systemState
+{
+    //update camera system state, required to begin camera interface
+}
 
 -(void)captureImageAtWaypoint
 {
@@ -358,6 +357,7 @@
         self.uploadProgressView = [UIAlertController alertControllerWithTitle:@"Mission Uploading" message:@"" preferredStyle:UIAlertControllerStyleAlert];
         [self presentViewController:self.uploadProgressView animated:YES completion:nil];
     }
+    
     NSString* message = [NSString stringWithFormat:@"%d%%", progress];
     [self.uploadProgressView setMessage:message];
 }
@@ -451,7 +451,39 @@
     }
 }
 
+-(void)startCalibrationWithResult:(DJIExecuteResultBlock)block
+{
+    if(self.compassStatus == DJICompassCalibrationStep1) {
+        NSLog(@"Step 1...");
+        //When this is complete set to step 2
+    }
+    if(self.compassStatus == DJICompassCalibrationStep2) {
+        NSLog(@"Step 2...");
+        //When this is complete set to success
+    }
+    if(self.compassStatus == DJICompassCalibrationSucceeded) {
+        NSLog(@"Compass Calibrated");
+        block = ERR_Succeeded;
+    }
+    if(self.compassStatus == DJICompassCalibrationFailed) {
+        return;
+    }
+}
+
 #pragma mark - DJIGSButtonViewController Delegate Methods
+
+- (void)compassBtnActionInGSButtonVC:(DJIGSButtonViewController *)GSBtnVC
+{
+    //ViewController should pop up, and has buttons to go through 2 steps, then success
+    [self startCalibrationWithResult:^(DJIError *error) {
+        if(error.errorCode != ERR_Succeeded) {
+            [self displayAlertWithMessage:@"Calibration Failed" andTitle:@"Compass" withActionOK:@"OK" withActionCancel:nil withActionRetryNavigation:nil];
+        }
+        else {
+            [self displayAlertWithMessage:@"Calibration Success" andTitle:@"Compass" withActionOK:@"OK" withActionCancel:nil withActionRetryNavigation:nil];
+        }
+    }];
+}
 
 - (void)stopBtnActionInGSButtonVC:(DJIGSButtonViewController *)GSBtnVC
 {
