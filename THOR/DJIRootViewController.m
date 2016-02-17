@@ -5,8 +5,9 @@
 #import "DJIRootViewController.h"
 #import "DJIGSButtonViewController.h"
 #import "DJIWaypointConfigViewController.h"
+#import "ImageViewController.h"
 
-@interface DJIRootViewController ()<DJIGSButtonViewControllerDelegate, DJIWaypointConfigViewControllerDelegate, DJICameraDelegate, DJICompass>
+@interface DJIRootViewController ()<DJIGSButtonViewControllerDelegate, DJIWaypointConfigViewControllerDelegate, DJICompass>
 @property (nonatomic, assign)BOOL isEditingPoints;
 @property (nonatomic, strong)DJIGSButtonViewController *gsButtonVC;
 @property (nonatomic, strong)DJIWaypointConfigViewController *waypointConfigVC;
@@ -61,6 +62,7 @@
 {
     self.userLocation = kCLLocationCoordinate2DInvalid;
     self.droneLocation = kCLLocationCoordinate2DInvalid;
+    self.customLocation = kCLLocationCoordinate2DInvalid;
     
     self.mapView.delegate = self;
     self.mapView.mapType = MKMapTypeSatelliteFlyover;
@@ -77,9 +79,10 @@
     //user defined mission properties
     self.missionLengthDistance = 0.0;
     self.missionLifeTime = 0.0;
+    
     //when not connected to drone, set power level to test mission sanity check
     //self.powerLevel = 0;
-    //self.powerPercent = 100;
+    self.powerPercent = 100;
 }
 
 -(void) initUI
@@ -146,7 +149,7 @@
     
     //init camera
     self.camera = (DJIPhantom3ProCamera*)self.phantomDrone.camera;
-    //self.camera.delegate = self;
+    self.camera.delegate = self;
     
     //init navigation for waypoints
     self.navigationManager = self.phantomDrone.mainController.navigationManager;
@@ -216,6 +219,18 @@
         self.mapCamera.altitude = 250;
         [self.mapView setCamera:self.mapCamera animated:NO];
     }
+    //zoom to testing location
+//    double latitude = 42.3655341;
+//    double longitude = -71.1335522;
+//    self.customLocation = CLLocationCoordinate2DMake(latitude, longitude);
+//    if(CLLocationCoordinate2DIsValid(self.customLocation)) {
+//        //zoom to custom location
+//        self.mapCamera.centerCoordinate = self.customLocation;
+//        self.mapCamera.pitch = 45;
+//        self.mapCamera.heading = 45;
+//        self.mapCamera.altitude = 250;
+//        [self.mapView setCamera:self.mapCamera animated:NO];
+//    }
 }
 
 -(void) hideProgressView
@@ -226,10 +241,14 @@
     }
 }
 
-//#pragma mark DJICameraDelegate
+#pragma mark DJICameraDelegate
 -(void)camera:(DJICamera *)camera didUpdateSystemState:(DJICameraSystemState *)systemState
 {
     //update camera system state, required to begin camera interface
+}
+-(void)camera:(DJICamera *)camera didReceivedVideoData:(uint8_t *)videoBuffer length:(int)length
+{
+    
 }
 
 -(void)captureImageAtWaypoint
@@ -257,7 +276,7 @@
 }
 
 #pragma mark CLLocation Methods
--(void) startUpdateLocation
+-(void)startUpdateLocation
 {
     if ([CLLocationManager locationServicesEnabled]) {
         if (self.locationManager == nil) {
@@ -375,6 +394,15 @@
         weakSelf.waypointConfigVC.view.alpha = 0;
     }];
     
+}
+
+//Pass waypoint count, also same as number of photos to be taken to imageViewController
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if([segue.identifier isEqualToString:@"showImages"]) {
+        ImageViewController *imageController = (ImageViewController *)segue.destinationViewController;
+        imageController.numberOfPhotos = self.waypointMission.waypointCount;
+    }
 }
 
 //User defined mission is entered and uploaded to drone

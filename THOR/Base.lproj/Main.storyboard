@@ -87,7 +87,7 @@
                         <barButtonItem key="rightBarButtonItem" systemItem="camera" id="LSN-8O-xyf">
                             <color key="tintColor" red="0.42091648310000002" green="0.69748232700000001" blue="0.76999998089999999" alpha="1" colorSpace="calibratedRGB"/>
                             <connections>
-                                <segue destination="RDD-US-vLh" kind="show" id="lse-6S-Yqt"/>
+                                <segue destination="RDD-US-vLh" kind="show" identifier="showImages" id="lse-6S-Yqt"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -98,6 +98,7 @@
                         <outlet property="batterySymbol" destination="R0O-aV-M5p" id="Zmx-8F-uJk"/>
                         <outlet property="gpsLabel" destination="2Mf-Py-spb" id="da3-RT-gMO"/>
                         <outlet property="hsLabel" destination="HeS-LE-j1H" id="e77-sJ-oKw"/>
+                        <outlet property="imageViewBtn" destination="LSN-8O-xyf" id="hjE-Zk-FUb"/>
                         <outlet property="mapView" destination="G31-ec-2lq" id="eWk-wF-lhZ"/>
                         <outlet property="modeLabel" destination="uU3-FU-NWC" id="Jz0-R3-4ea"/>
                         <outlet property="topBarView" destination="2gd-W6-mTe" id="OFa-Zs-CXY"/>

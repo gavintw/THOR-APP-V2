@@ -8,7 +8,7 @@
 #import <MapKit/MapKit.h>
 #import <CoreLocation/CoreLocation.h>
 
-@interface DJIRootViewController : UIViewController<MKMapViewDelegate, CLLocationManagerDelegate, DJIDroneDelegate, DJIMainControllerDelegate, GroundStationDelegate, DJINavigationDelegate, DJIAppManagerDelegate>
+@interface DJIRootViewController : UIViewController<MKMapViewDelegate, CLLocationManagerDelegate, DJIDroneDelegate, DJIMainControllerDelegate, GroundStationDelegate, DJINavigationDelegate, DJIAppManagerDelegate, DJICameraDelegate>
 
 //mapping
 @property (nonatomic, strong) DJIMapController *mapController;
@@ -16,6 +16,7 @@
 @property(nonatomic, strong) CLLocationManager* locationManager;
 @property(nonatomic, assign) CLLocationCoordinate2D userLocation;
 @property(nonatomic, assign) CLLocationCoordinate2D droneLocation;
+@property(nonatomic, assign) CLLocationCoordinate2D customLocation;
 @property (nonatomic, strong) UITapGestureRecognizer *tapGesture;
 @property (nonatomic, strong) MKMapCamera *mapCamera;
 
@@ -49,6 +50,10 @@
 
 //Camera
 @property(nonatomic, strong) DJIPhantom3ProCamera *camera;
+
+//imageViewController Segue
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *imageViewBtn;
+
 
 //waypoints and navigation
 @property(nonatomic, weak) NSObject<DJINavigation>* navigationManager;

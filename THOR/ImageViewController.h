@@ -2,15 +2,14 @@
 //  ImageViewController.h
 //  THOR
 //
-//  Created by Dan Vasilyonok on 2/10/16.
-//  Copyright © 2016 DJI. All rights reserved.
-//
 
 #import <UIKit/UIKit.h>
 #import <DJISDK/DJISDK.h>
 #import "DJIRootViewController.h"
 
 @interface ImageViewController : UIViewController
+
+@property(atomic) int numberOfPhotos;
 
 @property (weak, nonatomic) IBOutlet UIButton *downloadBtn;
 @property (weak, nonatomic) IBOutlet UIButton *uploadBtn;

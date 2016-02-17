@@ -13,6 +13,7 @@
 		65F7D1871C6C0E5700ABCD10 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 65F7D1861C6C0E5700ABCD10 /* libz.tbd */; };
 		65F7D18A1C6C147D00ABCD10 /* ImageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 65F7D1891C6C147D00ABCD10 /* ImageViewController.m */; };
 		65F7D18C1C6C34B700ABCD10 /* DJISDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65F7D18B1C6C34B700ABCD10 /* DJISDK.framework */; };
+		65F7D1911C740D1700ABCD10 /* AWSInteraction.m in Sources */ = {isa = PBXBuildFile; fileRef = 65F7D1901C740D1700ABCD10 /* AWSInteraction.m */; };
 		A402A0701B4BC22400129605 /* DJIRootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A402A06F1B4BC22400129605 /* DJIRootViewController.m */; };
 		A402A0741B4BC43800129605 /* DJIMapController.m in Sources */ = {isa = PBXBuildFile; fileRef = A402A0721B4BC43800129605 /* DJIMapController.m */; };
 		A402A07A1B4BDAE400129605 /* DJIAircraftAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = A402A0771B4BDAE400129605 /* DJIAircraftAnnotation.m */; };
@@ -47,6 +48,8 @@
 		65F7D1881C6C147D00ABCD10 /* ImageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageViewController.h; sourceTree = "<group>"; };
 		65F7D1891C6C147D00ABCD10 /* ImageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageViewController.m; sourceTree = "<group>"; };
 		65F7D18B1C6C34B700ABCD10 /* DJISDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DJISDK.framework; path = THOR/DJISDK.framework; sourceTree = SOURCE_ROOT; };
+		65F7D18F1C740D1700ABCD10 /* AWSInteraction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AWSInteraction.h; sourceTree = "<group>"; };
+		65F7D1901C740D1700ABCD10 /* AWSInteraction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AWSInteraction.m; sourceTree = "<group>"; };
 		8C2C9AD36D6E52343EA0FC5B /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		8DC858C68AB1FBD328BF2B9F /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		A402A06E1B4BC22400129605 /* DJIRootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DJIRootViewController.h; sourceTree = "<group>"; };
@@ -131,9 +134,11 @@
 		A4E86B741B4A374300F204DA /* THOR */ = {
 			isa = PBXGroup;
 			children = (
-				A402A0761B4BDAE400129605 /* DJIAircraftAnnotation.h */,
 				65F7D1881C6C147D00ABCD10 /* ImageViewController.h */,
 				65F7D1891C6C147D00ABCD10 /* ImageViewController.m */,
+				65F7D18F1C740D1700ABCD10 /* AWSInteraction.h */,
+				65F7D1901C740D1700ABCD10 /* AWSInteraction.m */,
+				A402A0761B4BDAE400129605 /* DJIAircraftAnnotation.h */,
 				A402A0771B4BDAE400129605 /* DJIAircraftAnnotation.m */,
 				A402A0781B4BDAE400129605 /* DJIAircraftAnnotationView.h */,
 				A402A0791B4BDAE400129605 /* DJIAircraftAnnotationView.m */,
@@ -359,6 +364,7 @@
 				A402A07B1B4BDAE400129605 /* DJIAircraftAnnotationView.m in Sources */,
 				65F7D18A1C6C147D00ABCD10 /* ImageViewController.m in Sources */,
 				A4E86B7B1B4A374300F204DA /* AppDelegate.m in Sources */,
+				65F7D1911C740D1700ABCD10 /* AWSInteraction.m in Sources */,
 				A4E86B781B4A374300F204DA /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

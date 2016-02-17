@@ -2,14 +2,8 @@
 //  ImageViewController.m
 //  THOR
 //
-//  Created by Dan Vasilyonok on 2/10/16.
-//  Copyright © 2016 DJI. All rights reserved.
-//
 
 #import "ImageViewController.h"
-
-
-#define PHOTO_NUMBER 10
 
 @interface ImageViewController () <DJICameraDelegate> {
     __block NSMutableData *_downloadedFileData;
@@ -23,6 +17,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
     [self initDrone];
     [self initUI];
 }
@@ -49,16 +44,26 @@
     
     self.uploadBtn.backgroundColor = self.myColorBlue;
     [self.uploadBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    
+    NSString *message = [NSString stringWithFormat:@"%i Photos Available for Download", self.numberOfPhotos];
+    [self displayAlertWithMessage:message andTitle:@"Photos" withActionOK:@"OK" withActionCancel:nil];
 }
 
 -(void)initDrone
 {
     self.phantomDrone = [[DJIDrone alloc] initWithType:DJIDrone_Phantom3Professional];
     self.camera = (DJIPhantom3ProCamera*)self.phantomDrone.camera;
+    self.camera.delegate = self;
 }
 
--(void) camera:(DJICamera *)camera didUpdatePlaybackState:(DJICameraPlaybackState*)playbackState {
+#pragma mark DJICameraDelegate
+-(void) camera:(DJICamera *)camera didUpdatePlaybackState:(DJICameraPlaybackState*)playbackState
+{
     _selectedPhotoNumber=playbackState.numbersOfSelected;
+}
+-(void)camera:(DJICamera *)camera didReceivedVideoData:(uint8_t *)videoBuffer length:(int)length
+{
+    
 }
 
 -(IBAction)onDownloadButtonClicked:(id)sender
@@ -81,18 +86,18 @@
         [self.camera enterMultipleEditMode];
         sleep(1);
         
-        while (_selectedPhotoNumber!=PHOTO_NUMBER) {
+        while (_selectedPhotoNumber!=self.numberOfPhotos) {
             [self.camera selectAllFilesInPage];
             sleep(1);
             
-            if(_selectedPhotoNumber>PHOTO_NUMBER){
-                for(int unselectFileIndex=0; _selectedPhotoNumber!=PHOTO_NUMBER;unselectFileIndex++){
+            if(_selectedPhotoNumber>self.numberOfPhotos){
+                for(int unselectFileIndex=0; _selectedPhotoNumber!=self.numberOfPhotos;unselectFileIndex++){
                     [self.camera unselectFileAtIndex:unselectFileIndex];
                     sleep(1);
                 }
                 break;
             }
-            else if(_selectedPhotoNumber <PHOTO_NUMBER){
+            else if(_selectedPhotoNumber <self.numberOfPhotos){
                 [self.camera multiplePreviewPreviousPage];
                 sleep(1);
             }
@@ -113,7 +118,7 @@
         targetFileName=fileName;
         dispatch_async(dispatch_get_main_queue(), ^{
             [weakSelf showDownloadProgressAlert];
-            [weakSelf.downloadProgressAlert setTitle:[NSString stringWithFormat:@"Download (%d/%d)", finishedFileCount + 1, PHOTO_NUMBER]];
+            [weakSelf.downloadProgressAlert setTitle:[NSString stringWithFormat:@"Download (%d/%d)", finishedFileCount + 1, self.numberOfPhotos]];
             [weakSelf.downloadProgressAlert setMessage:[NSString stringWithFormat:@"FileName:%@ FileSize:%0.1fKB Downloaded:0.0KB", fileName, fileSize / 1024.0]];
             timer =  [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(updateDownloadProgress) userInfo:nil repeats:YES];
             [timer fire];
@@ -124,11 +129,11 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             [timer invalidate];
             finishedFileCount++;
-            if(finishedFileCount>=PHOTO_NUMBER) {
+            if(finishedFileCount>=self.numberOfPhotos) {
                 [self.downloadProgressAlert dismissViewControllerAnimated:YES completion:nil];
                 self.downloadProgressAlert = nil;
                 [_camera setCameraWorkMode:CameraWorkModeCapture withResult:nil];
-                NSString* title = [NSString stringWithFormat:@"Download (%d/%d)", finishedFileCount, PHOTO_NUMBER];
+                NSString* title = [NSString stringWithFormat:@"Download (%d/%d)", finishedFileCount, self.numberOfPhotos];
                 [self displayAlertWithMessage:@"download finished" andTitle:title withActionOK:@"OK" withActionCancel:nil];
             }
             UIImage *downloadPhoto=[UIImage imageWithData:_downloadedFileData];
@@ -148,6 +153,7 @@
     }
 }
 
+//Upload imageArray to AWS S3, execute lamda function
 -(IBAction)onUploadButtonClicked:(id)sender
 {
     

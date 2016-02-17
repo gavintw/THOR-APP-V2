@@ -12,7 +12,7 @@
     if (self) {
         self.enabled = NO;
         self.draggable = NO;
-        self.image = [UIImage imageNamed:@"aircraft.png"];
+        self.image = [UIImage imageNamed:@"aircraft2.png"];
     }
     
     return self;
