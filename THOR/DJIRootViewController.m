@@ -93,6 +93,7 @@
     self.hsLabel.text = @"HS: 0.0 M/S";
     self.altitudeLabel.text = @"Alt: 0 M";
     self.batteryPercentage.text = @"100";
+    self.horizontalSpeed = 0.0;
     
     self.myColorBlue = [UIColor colorWithRed:45/255.0 green:188/255.0 blue:220/255.0 alpha:1.0];
     self.myColorGreen = [UIColor colorWithRed:104/255.0 green:175/255.0 blue:97/255.0 alpha:1.0];
@@ -251,8 +252,29 @@
     
 }
 
+
+-(void)captureImageBetweenWaypoints:(DJIMCSystemState*)state
+{
+    DJIWaypoint* waypoint = [self.waypointMission waypointAtIndex:1];
+    if( (self.horizontalSpeed >= self.waypointMission.autoFlightSpeed-2.0) && ((fabsf(state.altitude-waypoint.altitude)) <2.0) ) {
+        [self.camera startTakePhoto:CameraContinousCapture withResult:^(DJIError *error) {
+            if(error.errorCode != ERR_Succeeded) {
+                NSLog(@"Could Not Enter Continuous Capture Mode");
+            }
+        }];
+    }
+    if(state.altitude <= 2.0 && self.horizontalSpeed <= 1.0) {
+        [self.camera stopTakePhotoWithResult:^(DJIError *error) {
+            if(error.errorCode == ERR_Succeeded) {
+                NSLog(@"Could Not Exit Continuous Capture Mode");
+            }
+        }];
+    }
+}
+
 -(void)captureImageAtWaypoint
 {
+    //capture image at each waypoint
     for(int i = 0; i<self.waypointMission.waypointCount; i++) {
         DJIWaypointAction *snapPicture = [[DJIWaypointAction alloc]initWithActionType:DJIWaypointActionStartTakePhoto param:0];
         DJIWaypoint *waypoint = [self.waypointMission waypointAtIndex:i];
@@ -266,7 +288,8 @@
     NSString* message = @"Register App Successed!";
     if (error != RegisterSuccess) {
         message = @"Register App Failed! Please enter your App Key and check the network.";
-    }else
+    }
+    else
     {
         [self.phantomDrone connectToDrone];
         [self.phantomDrone.mainController startUpdateMCSystemState];
@@ -427,6 +450,7 @@
     //If mission is not too long, given remaining battery
     if([self userDefinedMissionSanityCheck]) {
         
+        //Capture a photo at each waypoint, comment out if using continous capture
         [self captureImageAtWaypoint];
         
         //Heading Mode during mission
@@ -560,13 +584,13 @@
         [self displayAlertWithMessage:message andTitle:title withActionOK:@"OK" withActionCancel:nil];
         return;
     }
-    if(self.gpsSignalLevel == GpsSignalLevel0 && self.gpsSignalLevel == GpsSignalLevel1) {
+    if(self.gpsSignalLevel == GpsSignalLevel0 || self.gpsSignalLevel == GpsSignalLevel1) {
         NSString *message = @"Retry when stronger signal";
         NSString *title = @"Weak GPS Signal";
         [self displayAlertWithMessage:message andTitle:title withActionOK:@"OK" withActionCancel:nil];
         return;
     }
-    if(self.batteryInfo.remainPowerPercent < 40) {
+    if(self.batteryInfo.remainPowerPercent < 30) {
         NSString *message = @"Battery Level 40%, Recharge for Mission";
         NSString *title = @"Insufficient Battery Level";
         [self displayAlertWithMessage:message andTitle:title withActionOK:@"OK" withActionCancel:@"Cancel"];
@@ -694,11 +718,29 @@
         }
     }];
     
+    
     self.modeLabel.text = state.flightModeString;
     self.gpsLabel.text = [NSString stringWithFormat:@"GPS: %d", state.satelliteCount];
     self.vsLabel.text = [NSString stringWithFormat:@"VS: %0.1f M/S",state.velocityZ];
-    self.hsLabel.text = [NSString stringWithFormat:@"HS: %0.1f M/S",(sqrtf(state.velocityX*state.velocityX + state.velocityY*state.velocityY))];
+    self.horizontalSpeed =(sqrtf(state.velocityX*state.velocityX + state.velocityY*state.velocityY));
+    self.hsLabel.text = [NSString stringWithFormat:@"HS: %0.1f M/S",self.horizontalSpeed];
     self.altitudeLabel.text = [NSString stringWithFormat:@"Alt: %0.1f M",state.altitude];
+    
+    /***
+     Enter Continous Capture Mode, to take photos between waypoints.
+     1.Continous Capture mode defined by traveling at least 2.0m/s slower than the autoFlightSpeed
+     2.If Actual altitude is within 2 meters of user defined altitude
+     Exit Continous Capture Mode, to stop taking photos between waypoints. (landing)
+     1. Exiting occurs when altitude <= 2.0 meters
+     2. Horizontal Speed <= 1.0 meters
+     
+     Comment out if using capture at waypoint function
+     
+     ***/
+    
+    
+    //[self captureImageBetweenWaypoints:state];
+
     
     //Pre Launch important variable checks
     self.gpsSatelliteCount = state.satelliteCount;

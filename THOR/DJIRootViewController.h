@@ -44,6 +44,9 @@
 @property(nonatomic, strong) DJIBattery *batteryInfo;
 @property (atomic) long powerPercent;
 
+//Horiztontal Speed
+@property(atomic) float horizontalSpeed;
+
 //Drone and flight controller
 @property(nonatomic, strong) DJIDrone* phantomDrone;
 @property(nonatomic, strong) DJIPhantom3ProMainController* phantomProMainController;
