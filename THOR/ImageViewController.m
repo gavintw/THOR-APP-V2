@@ -46,6 +46,10 @@
     [self.uploadBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     
     NSString *message = [NSString stringWithFormat:@"%i Photos Available for Download", self.numberOfPhotos];
+    
+    self.AWS = [[AWSInteraction alloc]init];
+    [self.AWS setUpIdentity];
+    
     [self displayAlertWithMessage:message andTitle:@"Photos" withActionOK:@"OK" withActionCancel:nil];
 }
 
@@ -78,6 +82,8 @@
         }
     }];
 }
+
+
 
 -(void)selectPhotos {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -136,7 +142,14 @@
                 NSString* title = [NSString stringWithFormat:@"Download (%d/%d)", finishedFileCount, self.numberOfPhotos];
                 [self displayAlertWithMessage:@"download finished" andTitle:title withActionOK:@"OK" withActionCancel:nil];
             }
+            
+            //store downloaded photo
             UIImage *downloadPhoto=[UIImage imageWithData:_downloadedFileData];
+            
+            //save to camera roll
+            UIImageWriteToSavedPhotosAlbum(downloadPhoto, nil, nil, nil);
+            
+            //add to image Array
             [self.imageArray addObject:downloadPhoto];
         });
     }];
@@ -156,7 +169,21 @@
 //Upload imageArray to AWS S3, execute lamda function
 -(IBAction)onUploadButtonClicked:(id)sender
 {
-    
+    UIImagePickerController *picker = [[UIImagePickerController alloc]init];
+    picker.delegate = self;
+    picker.allowsEditing = YES;
+    picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+    [self presentViewController:picker animated:YES completion:NULL];
+}
+
+-(void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary*)info {
+    UIImage *selectedImage = info[UIImagePickerControllerEditedImage];
+    [self.AWS uploadImageToS3:selectedImage];
+    [picker dismissViewControllerAnimated:YES completion:NULL];
+}
+
+-(void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
+    [picker dismissViewControllerAnimated:YES completion:NULL];
 }
 
 //Display a UI Alert Controller with specified parameters

@@ -62,4 +62,5 @@ dependencies: \
   /Users/Daniel/Desktop/DJI\ Phantom\ 3/THOR/THOR/DJIAircraftAnnotationView.h \
   /Users/Daniel/Desktop/DJI\ Phantom\ 3/THOR/THOR/DJIGSButtonViewController.h \
   /Users/Daniel/Desktop/DJI\ Phantom\ 3/THOR/THOR/DJIWaypointConfigViewController.h \
-  /Users/Daniel/Desktop/DJI\ Phantom\ 3/THOR/THOR/ImageViewController.h
+  /Users/Daniel/Desktop/DJI\ Phantom\ 3/THOR/THOR/ImageViewController.h \
+  /Users/Daniel/Desktop/DJI\ Phantom\ 3/THOR/THOR/AWSInteraction.h

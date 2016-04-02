@@ -6,8 +6,9 @@
 #import <UIKit/UIKit.h>
 #import <DJISDK/DJISDK.h>
 #import "DJIRootViewController.h"
+#import "AWSInteraction.h"
 
-@interface ImageViewController : UIViewController
+@interface ImageViewController : UIViewController<UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 
 @property(atomic) int numberOfPhotos;
 
@@ -16,6 +17,8 @@
 
 -(IBAction)onDownloadButtonClicked:(id)sender;
 -(IBAction)onUploadButtonClicked:(id)sender;
+
+@property (nonatomic, strong) AWSInteraction *AWS;
 
 @property(nonatomic, strong) UIColor *myColorBlue;
 @property(nonatomic, strong) UIColor *myColorGreen;

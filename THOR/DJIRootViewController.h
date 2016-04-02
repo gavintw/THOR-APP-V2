@@ -46,6 +46,7 @@
 
 //Horiztontal Speed
 @property(atomic) float horizontalSpeed;
+@property(atomic) int captureFlag;
 
 //Drone and flight controller
 @property(nonatomic, strong) DJIDrone* phantomDrone;

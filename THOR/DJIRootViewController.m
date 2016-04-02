@@ -83,6 +83,7 @@
     //when not connected to drone, set power level to test mission sanity check
     //self.powerLevel = 0;
     self.powerPercent = 100;
+    self.captureFlag = 0;
 }
 
 -(void) initUI
@@ -253,23 +254,30 @@
 }
 
 
--(void)captureImageBetweenWaypoints:(DJIMCSystemState*)state
+-(void)enterContinuousCapture
 {
-    DJIWaypoint* waypoint = [self.waypointMission waypointAtIndex:1];
-    if( (self.horizontalSpeed >= self.waypointMission.autoFlightSpeed-2.0) && ((fabsf(state.altitude-waypoint.altitude)) <2.0) ) {
         [self.camera startTakePhoto:CameraContinousCapture withResult:^(DJIError *error) {
             if(error.errorCode != ERR_Succeeded) {
-                NSLog(@"Could Not Enter Continuous Capture Mode");
+                [self displayAlertWithMessage:@"Continuous Capture Enter Failed" andTitle:@"Continuous Capture Enter" withActionOK:@"OK" withActionCancel:nil withActionRetryNavigation:nil];
+                //NSLog(@"Could Not Enter Continuous Capture Mode");
+            }
+            else {
+                self.captureFlag += 1;
             }
         }];
-    }
-    if(state.altitude <= 2.0 && self.horizontalSpeed <= 1.0) {
+}
+
+-(void)exitContinuousCapture
+{
         [self.camera stopTakePhotoWithResult:^(DJIError *error) {
-            if(error.errorCode == ERR_Succeeded) {
-                NSLog(@"Could Not Exit Continuous Capture Mode");
+            if(error.errorCode != ERR_Succeeded) {
+                [self displayAlertWithMessage:@"Continuous Capture Exit Failed" andTitle:@"Continuous Capture Exit" withActionOK:@"OK" withActionCancel:nil withActionRetryNavigation:nil];
+                //NSLog(@"Could Not Exit Continuous Capture Mode");
+            }
+            else {
+                self.captureFlag += 1;
             }
         }];
-    }
 }
 
 -(void)captureImageAtWaypoint
@@ -738,9 +746,15 @@
      
      ***/
     
-    
-    //[self captureImageBetweenWaypoints:state];
-
+    /***
+    DJIWaypoint* waypoint = [self.waypointMission waypointAtIndex:1];
+    if(self.captureFlag == 0 && ( fabs(state.altitude-waypoint.altitude) <= 2.0) ) {
+        [self enterContinuousCapture];
+    }
+    if(self.captureFlag == 1 && state.altitude <= 1.0) {
+        [self exitContinuousCapture];
+    }
+     ***/
     
     //Pre Launch important variable checks
     self.gpsSatelliteCount = state.satelliteCount;

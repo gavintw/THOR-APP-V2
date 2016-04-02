@@ -11,7 +11,6 @@
 {
     if(self == [super init]) {
         //To begin interaction with AWS S3, need transfer manager client, entry point into S3 API
-        self.transferManager = [AWSS3TransferManager defaultS3TransferManager];
     }
     return self;
 }
@@ -32,6 +31,8 @@
 
 -(void)downloadImageFromS3
 {
+    AWSS3TransferManager *transferManager = [AWSS3TransferManager defaultS3TransferManager];
+    
     //download path
     NSString *downloadingFilePath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"downloaded-image1.JPG"];
     //location where it will be downloaded
@@ -44,9 +45,9 @@
     downloadRequest.bucket = @"imagesgraminor";
     downloadRequest.key = @"image1.JPG";
     downloadRequest.downloadingFileURL = downloadingFileURL;
-    
+
     //Download file
-    [[self.transferManager download:downloadRequest] continueWithExecutor:[AWSExecutor mainThreadExecutor] withBlock:^id(AWSTask *task) {
+    [[transferManager download:downloadRequest] continueWithExecutor:[AWSExecutor mainThreadExecutor] withBlock:^id(AWSTask *task) {
         if(task.error) {
             if([task.error.domain isEqualToString:AWSS3TransferManagerErrorDomain]) {
                 switch(task.error.code) {
@@ -66,23 +67,32 @@
         if(task.result) {
             AWSS3TransferManagerDownloadOutput *downloadOutput = task.result;
             //File download success
+            NSLog(@"Success: %@", downloadOutput);
         }
         return nil;
     }];
 }
 
--(void)uploadImagesToS3FromArray:(NSMutableArray *)images
+-(void)uploadImageToS3:(UIImage *)image
 {
+    AWSS3TransferManager *transferManager = [AWSS3TransferManager defaultS3TransferManager];
     AWSS3TransferManagerUploadRequest *uploadRequest = [AWSS3TransferManagerUploadRequest new];
     
+    //Create local image that can used to upload to S3
+    NSString *path = [NSTemporaryDirectory() stringByAppendingPathComponent:@"testImage.jpg"];
+    NSData *imageData = UIImageJPEGRepresentation(image,1.0);
+    [imageData writeToFile:path atomically:YES];
+    
+    //image is saved, use path to create local file url
+    NSURL *url = [NSURL fileURLWithPath:path];
+    
     //create upload request
-    NSURL *testFileURL = [[NSURL alloc]init];
     uploadRequest.bucket = @"imagesgraminor";
-    uploadRequest.key = @"testFile.txt";
-    uploadRequest.body = testFileURL;
+    uploadRequest.key = @"testImage1.jpg";
+    uploadRequest.body = url;
     
     //upload File using transferManager, and pass uploadRequest
-    [[self.transferManager upload:uploadRequest] continueWithExecutor:[AWSExecutor mainThreadExecutor] withBlock:^id(AWSTask *task) {
+    [[transferManager upload:uploadRequest] continueWithExecutor:[AWSExecutor mainThreadExecutor] withBlock:^id(AWSTask *task) {
         if(task.error) {
             if([task.error.domain isEqualToString:AWSS3TransferManagerErrorDomain]) {
                 switch(task.error.code) {
@@ -104,6 +114,7 @@
         if(task.result) {
             AWSS3TransferManagerUploadOutput *uploadOutput = task.result;
             //File upload success
+            NSLog(@"Success: %@", uploadOutput);
         }
         return nil;
     }];

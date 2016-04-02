@@ -9,10 +9,8 @@
 
 @interface AWSInteraction : NSObject
 
-@property(nonatomic, strong) AWSS3TransferManager *transferManager;
-
 -(void)setUpIdentity;
 -(void)downloadImageFromS3;
--(void)uploadImageToS3;
+-(void)uploadImageToS3:(UIImage *)image;
 
 @end
