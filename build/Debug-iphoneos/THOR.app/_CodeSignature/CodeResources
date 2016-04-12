@@ -14,13 +14,13 @@
 		</data>
 		<key>Assets.car</key>
 		<data>
-		a1dB5VXgjHvt8IW3dybZmMgU5Nw=
+		k/gyCsCXtlP0MUh9zb44uBqljfU=
 		</data>
 		<key>Base.lproj/Main.storyboardc/4IP-eb-ju4-view-eex-sM-eGx.nib</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			XWpAuyHm0kg6thdf3uVN42ZaTWU=
+			AwnB6Xd2iC5I4l6l95d9NcIe93c=
 			</data>
 			<key>optional</key>
 			<true/>
@@ -38,7 +38,7 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			lHabA/G4/7Y14ycIa1dIsaGZ4Lc=
+			tFtZkLAngHrH+FRVzhg1yqmk2+I=
 			</data>
 			<key>optional</key>
 			<true/>
@@ -47,7 +47,7 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			DU59iyxHMljNnBUcFQF7jt3jj5E=
+			AdnTn4FHkSoSPP1jDNfbaHIBe6Y=
 			</data>
 			<key>optional</key>
 			<true/>
@@ -56,22 +56,22 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			zKkXEUB9EX4WXpBgWDOteMCo7bw=
+			6+gYQaU0kpp2lKsdifagh7bcQuI=
 			</data>
 			<key>optional</key>
 			<true/>
 		</dict>
 		<key>DJIGSButtonViewController.nib</key>
 		<data>
-		qxMnoViCLPnyNHcCw1VqWWx0h7U=
+		mnacymqafjJrUrDml6nx6UazHzE=
 		</data>
 		<key>DJIWaypointConfigViewController.nib</key>
 		<data>
-		Vk8eQGWAJH6SknSbSVvHZ/cgwCs=
+		Loa4vusHuqCE7fUjbh0kQhJxAmw=
 		</data>
 		<key>Info.plist</key>
 		<data>
-		gJoGEIPYTRwZ2MW6BV180CsNcL8=
+		IG3txb7TbamiijIJE4+UJILpH5Y=
 		</data>
 		<key>Launch Screen.storyboardc/Info.plist</key>
 		<data>
@@ -87,7 +87,7 @@
 		</data>
 		<key>embedded.mobileprovision</key>
 		<data>
-		1cMxsvXhtm7EoUA17uQG2wyzXRs=
+		chJ/8YQ72IWDrl7uOdjpEetZ2AA=
 		</data>
 	</dict>
 	<key>files2</key>
@@ -102,13 +102,13 @@
 		</data>
 		<key>Assets.car</key>
 		<data>
-		a1dB5VXgjHvt8IW3dybZmMgU5Nw=
+		k/gyCsCXtlP0MUh9zb44uBqljfU=
 		</data>
 		<key>Base.lproj/Main.storyboardc/4IP-eb-ju4-view-eex-sM-eGx.nib</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			XWpAuyHm0kg6thdf3uVN42ZaTWU=
+			AwnB6Xd2iC5I4l6l95d9NcIe93c=
 			</data>
 			<key>optional</key>
 			<true/>
@@ -126,7 +126,7 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			lHabA/G4/7Y14ycIa1dIsaGZ4Lc=
+			tFtZkLAngHrH+FRVzhg1yqmk2+I=
 			</data>
 			<key>optional</key>
 			<true/>
@@ -135,7 +135,7 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			DU59iyxHMljNnBUcFQF7jt3jj5E=
+			AdnTn4FHkSoSPP1jDNfbaHIBe6Y=
 			</data>
 			<key>optional</key>
 			<true/>
@@ -144,18 +144,18 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			zKkXEUB9EX4WXpBgWDOteMCo7bw=
+			6+gYQaU0kpp2lKsdifagh7bcQuI=
 			</data>
 			<key>optional</key>
 			<true/>
 		</dict>
 		<key>DJIGSButtonViewController.nib</key>
 		<data>
-		qxMnoViCLPnyNHcCw1VqWWx0h7U=
+		mnacymqafjJrUrDml6nx6UazHzE=
 		</data>
 		<key>DJIWaypointConfigViewController.nib</key>
 		<data>
-		Vk8eQGWAJH6SknSbSVvHZ/cgwCs=
+		Loa4vusHuqCE7fUjbh0kQhJxAmw=
 		</data>
 		<key>Launch Screen.storyboardc/Info.plist</key>
 		<data>
@@ -167,7 +167,7 @@
 		</data>
 		<key>embedded.mobileprovision</key>
 		<data>
-		1cMxsvXhtm7EoUA17uQG2wyzXRs=
+		chJ/8YQ72IWDrl7uOdjpEetZ2AA=
 		</data>
 	</dict>
 	<key>rules</key>

@@ -20,6 +20,7 @@
     
     [self initDrone];
     [self initUI];
+    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -30,6 +31,7 @@
 -(void)viewWillAppear:(BOOL)animated
 {
     self.navigationController.view.backgroundColor = [UIColor whiteColor];
+    self.missionCount = 0;
 }
 
 -(void)initUI
@@ -46,7 +48,6 @@
     [self.uploadBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     
     NSString *message = [NSString stringWithFormat:@"%i Photos Available for Download", self.numberOfPhotos];
-    
     self.AWS = [[AWSInteraction alloc]init];
     [self.AWS setUpIdentity];
     
@@ -166,7 +167,7 @@
     }
 }
 
-//Upload imageArray to AWS S3, execute lamda function
+//Upload image to AWS S3, execute lamda function
 -(IBAction)onUploadButtonClicked:(id)sender
 {
     UIImagePickerController *picker = [[UIImagePickerController alloc]init];
@@ -178,12 +179,60 @@
 
 -(void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary*)info {
     UIImage *selectedImage = info[UIImagePickerControllerEditedImage];
-    [self.AWS uploadImageToS3:selectedImage];
+    //upload image to S3 for processing
+    [self.AWS uploadImageToS3:selectedImage withMissionCount:self.missionCount];
+    
     [picker dismissViewControllerAnimated:YES completion:NULL];
+    
+    //wait 3 seconds, processing should be done?
+    [self waitForNDVIProccessingToFinish];
+
 }
 
 -(void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
     [picker dismissViewControllerAnimated:YES completion:NULL];
+}
+
+-(void)downloadNOW:(NSTimer *)t
+{
+    //download image from S3 and Display on screen
+    [self.AWS downloadImageFromS3:self.AWS.superemeFileKey];
+    
+    [self waitForDownload];
+  
+}
+
+//Display processed image that just finished downloading
+-(void)displayNDVIProcessedImage:(NSTimer *)t
+{
+    //Display Processed NDVI Image
+    self.ndviProcessedImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:self.AWS.ndviImageURL]];
+    
+    //self.ndviProcessedImageView.contentMode = UIViewContentModeScaleAspectFit;
+    self.ndviProcessedImageDisplay = [self imageWithImage:self.ndviProcessedImage scaledToSize:CGSizeMake(503, 503)];
+    
+    self.ndviProcessedImageView.image = self.ndviProcessedImageDisplay;
+    
+    NSLog(@"Displaying processed image....");
+    
+}
+
+-(UIImage *)imageWithImage:(UIImage *)image scaledToSize:(CGSize)newSize {
+    UIGraphicsBeginImageContextWithOptions(newSize, NO, 0.0);
+    [image drawInRect:CGRectMake(0, 0, newSize.width, newSize.height)];
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return newImage;
+}
+
+-(void)waitForNDVIProccessingToFinish
+{
+    [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(downloadNOW:) userInfo:nil repeats:NO];
+}
+
+-(void)waitForDownload
+{
+    [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(displayNDVIProcessedImage:) userInfo:nil repeats:NO];
 }
 
 //Display a UI Alert Controller with specified parameters

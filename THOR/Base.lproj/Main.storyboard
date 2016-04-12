@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15C50" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="eFw-Vd-oOV">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10116" systemVersion="15C50" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="eFw-Vd-oOV">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
@@ -121,6 +121,17 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iJG-e1-lIK">
+                                <rect key="frame" x="0.0" y="114" width="375" height="50"/>
+                                <fontDescription key="fontDescription" name="Futura-Medium" family="Futura" pointSize="15"/>
+                                <state key="normal" title="Upload to Cloud &amp; Process"/>
+                                <connections>
+                                    <action selector="onUploadButtonClicked:" destination="RDD-US-vLh" eventType="touchUpInside" id="4U1-Fg-Jus"/>
+                                </connections>
+                            </button>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cLk-yo-XmA">
+                                <rect key="frame" x="0.0" y="163" width="375" height="437"/>
+                            </imageView>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2lw-dB-7Qx">
                                 <rect key="frame" x="0.0" y="64" width="375" height="50"/>
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
@@ -132,22 +143,18 @@
                                     <action selector="onDownloadButtonClicked:" destination="RDD-US-vLh" eventType="touchUpInside" id="r6K-1V-iD8"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iJG-e1-lIK">
-                                <rect key="frame" x="0.0" y="114" width="375" height="50"/>
-                                <fontDescription key="fontDescription" name="Futura-Medium" family="Futura" pointSize="15"/>
-                                <state key="normal" title="Upload to Cloud &amp; Process"/>
-                                <connections>
-                                    <action selector="onUploadButtonClicked:" destination="RDD-US-vLh" eventType="touchUpInside" id="4U1-Fg-Jus"/>
-                                </connections>
-                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="QSM-Aj-8iD" firstAttribute="top" secondItem="cLk-yo-XmA" secondAttribute="bottom" id="7Dd-Ri-aBR"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="7pc-TC-BF3"/>
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <size key="freeformSize" width="600" height="600"/>
                     <connections>
                         <outlet property="downloadBtn" destination="2lw-dB-7Qx" id="u49-hm-cca"/>
+                        <outlet property="ndviProcessedImageView" destination="cLk-yo-XmA" id="EN1-NU-g5E"/>
                         <outlet property="uploadBtn" destination="iJG-e1-lIK" id="7rq-nA-nhg"/>
                     </connections>
                 </viewController>

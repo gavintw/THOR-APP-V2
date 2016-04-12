@@ -11,6 +11,8 @@
 {
     if(self == [super init]) {
         //To begin interaction with AWS S3, need transfer manager client, entry point into S3 API
+        self.fileCount = 0;
+        self.superemeFileKey = @"";
     }
     return self;
 }
@@ -18,7 +20,7 @@
 -(void)setUpIdentity
 {
     //Initialize Amazon Cognito Credentials
-    AWSCognitoCredentialsProvider *credentialsProvider = [[AWSCognitoCredentialsProvider alloc] initWithRegionType:AWSRegionUSEast1 identityPoolId:@"us-east-1:30a77d75-4c46-4712-8dba-ce47f8403f0f"];
+    AWSCognitoCredentialsProvider *credentialsProvider = [[AWSCognitoCredentialsProvider alloc] initWithRegionType:AWSRegionUSEast1 identityPoolId:@"us-east-1:56c9328e-beb3-459e-926e-0166cae5e497"];
     
     AWSServiceConfiguration *configuration = [[AWSServiceConfiguration alloc] initWithRegion:AWSRegionUSEast1 credentialsProvider:credentialsProvider];
     
@@ -29,25 +31,29 @@
     
 }
 
--(void)downloadImageFromS3
+-(void)downloadImageFromS3:(NSString *)downloadFileKey
 {
-    AWSS3TransferManager *transferManager = [AWSS3TransferManager defaultS3TransferManager];
+    //NSLog(@"Downloading...\n");
+    //NSLog(@"%@", downloadFileKey);
+    
+    
+    AWSS3TransferManager *transferManager2 = [AWSS3TransferManager defaultS3TransferManager];
     
     //download path
-    NSString *downloadingFilePath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"downloaded-image1.JPG"];
+    NSString *downloadingFilePath = [NSTemporaryDirectory() stringByAppendingPathComponent:downloadFileKey];
     //location where it will be downloaded
-    NSURL *downloadingFileURL = [NSURL fileURLWithPath:downloadingFilePath];
+    self.ndviImageURL = [NSURL fileURLWithPath:downloadingFilePath];
     
     //download request
     AWSS3TransferManagerDownloadRequest *downloadRequest = [AWSS3TransferManagerDownloadRequest new];
     
     //set up download request with bucket name, image name, and location to download
-    downloadRequest.bucket = @"imagesgraminor";
-    downloadRequest.key = @"image1.JPG";
-    downloadRequest.downloadingFileURL = downloadingFileURL;
+    downloadRequest.bucket = @"graminorresized";
+    downloadRequest.key = downloadFileKey;
+    downloadRequest.downloadingFileURL = self.ndviImageURL;
 
     //Download file
-    [[transferManager download:downloadRequest] continueWithExecutor:[AWSExecutor mainThreadExecutor] withBlock:^id(AWSTask *task) {
+    [[transferManager2 download:downloadRequest] continueWithExecutor:[AWSExecutor mainThreadExecutor] withBlock:^id(AWSTask *task) {
         if(task.error) {
             if([task.error.domain isEqualToString:AWSS3TransferManagerErrorDomain]) {
                 switch(task.error.code) {
@@ -73,7 +79,7 @@
     }];
 }
 
--(void)uploadImageToS3:(UIImage *)image
+-(void)uploadImageToS3:(UIImage *)image withMissionCount:(int)missionCount
 {
     AWSS3TransferManager *transferManager = [AWSS3TransferManager defaultS3TransferManager];
     AWSS3TransferManagerUploadRequest *uploadRequest = [AWSS3TransferManagerUploadRequest new];
@@ -87,8 +93,11 @@
     NSURL *url = [NSURL fileURLWithPath:path];
     
     //create upload request
-    uploadRequest.bucket = @"imagesgraminor";
-    uploadRequest.key = @"testImage1.jpg";
+    uploadRequest.bucket = @"graminor";
+    NSString *fileKey = [NSString stringWithFormat:@"Image_%d.jpg",self.fileCount];
+    self.superemeFileKey = fileKey;
+    self.fileCount+=1;
+    uploadRequest.key = fileKey;
     uploadRequest.body = url;
     
     //upload File using transferManager, and pass uploadRequest
