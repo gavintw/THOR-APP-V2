@@ -227,7 +227,7 @@
 
 -(void)waitForNDVIProccessingToFinish
 {
-    [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(downloadNOW:) userInfo:nil repeats:NO];
+    [NSTimer scheduledTimerWithTimeInterval:2.5 target:self selector:@selector(downloadNOW:) userInfo:nil repeats:NO];
 }
 
 -(void)waitForDownload

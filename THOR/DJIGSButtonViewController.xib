@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9531" systemVersion="15C50" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="10116" systemVersion="15C50" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="DJIGSButtonViewController">
@@ -10,7 +10,6 @@
                 <outlet property="addBtn" destination="lSR-Lj-eLh" id="v4H-CP-LJx"/>
                 <outlet property="backBtn" destination="370-h9-FcK" id="uA0-OE-MWh"/>
                 <outlet property="clearBtn" destination="0sF-Ja-1FL" id="jvY-a6-5PB"/>
-                <outlet property="compassBtn" destination="t6y-HZ-cOQ" id="TbW-jS-aPV"/>
                 <outlet property="configBtn" destination="aiQ-ud-2ld" id="jsc-ba-OHB"/>
                 <outlet property="editBtn" destination="k0D-Bh-d3b" id="Cgx-5R-z7i"/>
                 <outlet property="focusMapBtn" destination="FOG-9k-vPx" id="6qt-jF-7j0"/>
@@ -102,14 +101,6 @@
                     <state key="normal" title="Stop"/>
                     <connections>
                         <action selector="stopBtnAction:" destination="-1" eventType="touchUpInside" id="gif-nX-weS"/>
-                    </connections>
-                </button>
-                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="t6y-HZ-cOQ">
-                    <rect key="frame" x="10" y="10" width="80" height="30"/>
-                    <fontDescription key="fontDescription" name="Futura-Medium" family="Futura" pointSize="15"/>
-                    <state key="normal" title="Compass"/>
-                    <connections>
-                        <action selector="compassAction:" destination="-1" eventType="touchUpInside" id="8bb-vo-5ai"/>
                     </connections>
                 </button>
             </subviews>

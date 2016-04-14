@@ -13,7 +13,7 @@ typedef NS_ENUM(NSUInteger, DJIGSViewMode) {
 
 @protocol DJIGSButtonViewControllerDelegate <NSObject>
 
-- (void)compassBtnActionInGSButtonVC:(DJIGSButtonViewController *)GSBtnVC;
+//- (void)compassBtnActionInGSButtonVC:(DJIGSButtonViewController *)GSBtnVC;
 - (void)stopBtnActionInGSButtonVC:(DJIGSButtonViewController *)GSBtnVC;
 - (void)clearBtnActionInGSButtonVC:(DJIGSButtonViewController *)GSBtnVC;
 - (void)focusMapBtnActionInGSButtonVC:(DJIGSButtonViewController *)GSBtnVC;
@@ -26,7 +26,7 @@ typedef NS_ENUM(NSUInteger, DJIGSViewMode) {
 
 @interface DJIGSButtonViewController : UIViewController
 
-@property (weak, nonatomic) IBOutlet UIButton *compassBtn;
+//@property (weak, nonatomic) IBOutlet UIButton *compassBtn;
 @property (weak, nonatomic) IBOutlet UIButton *backBtn;
 @property (weak, nonatomic) IBOutlet UIButton *stopBtn;
 @property (weak, nonatomic) IBOutlet UIButton *clearBtn;
@@ -41,7 +41,7 @@ typedef NS_ENUM(NSUInteger, DJIGSViewMode) {
 @property (assign, nonatomic) DJIGSViewMode mode;
 @property (weak, nonatomic) id <DJIGSButtonViewControllerDelegate> delegate;
 
-- (IBAction)compassAction:(id)sender;
+//- (IBAction)compassAction:(id)sender;
 - (IBAction)backBtnAction:(id)sender;
 - (IBAction)stopBtnAction:(id)sender;
 - (IBAction)clearBtnAction:(id)sender;

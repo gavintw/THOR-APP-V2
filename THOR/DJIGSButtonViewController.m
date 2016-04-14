@@ -49,17 +49,16 @@
     self.stopBtn.backgroundColor = self.myColorGreen;
     [self.stopBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     
-    self.compassBtn.backgroundColor = self.myColorGreen;
-    [self.compassBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    //self.compassBtn.backgroundColor = self.myColorGreen;
+    //[self.compassBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
 }
 
 #pragma mark - Property Method
 
 - (void)setMode:(DJIGSViewMode)mode
 {
-    
     _mode = mode;
-    [_compassBtn setHidden:(mode == DJIGSViewMode_EditMode)];
+    //[_compassBtn setHidden:(mode == DJIGSViewMode_EditMode)];
     [_editBtn setHidden:(mode == DJIGSViewMode_EditMode)];
     [_focusMapBtn setHidden:(mode == DJIGSViewMode_EditMode)];
     [_backBtn setHidden:(mode == DJIGSViewMode_ViewMode)];
@@ -72,11 +71,13 @@
 
 #pragma mark - IBAction Methods
 
+/*
 - (IBAction)compassAction:(id)sender {
     if([_delegate respondsToSelector:@selector(compassBtnActionInGSButtonVC:)]) {
         [_delegate compassBtnActionInGSButtonVC:self];
     }
 }
+ */
 
 - (IBAction)backBtnAction:(id)sender {
     [self setMode:DJIGSViewMode_ViewMode];
